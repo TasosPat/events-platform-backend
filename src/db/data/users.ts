@@ -1,6 +1,6 @@
 import { NewUser } from "../../models/User"
 
-export const Users: NewUser[] = [
+export const users: NewUser[] = [
     {
       name: "Alice Johnson",
       role: "staff",

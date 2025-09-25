@@ -1,6 +1,5 @@
 // src/models/Event.ts
-export interface Event {
-    id: number;
+export interface NewEvent {
     title: string;
     description: string;
     date: string; // ISO format (YYYY-MM-DD)
@@ -8,4 +7,6 @@ export interface Event {
     price?: number; // optional, since some events are free
   }
 
-  
+  export interface Event extends NewEvent {
+    id: number;
+  }

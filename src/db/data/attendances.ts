@@ -1,4 +1,4 @@
-import { NewAttendance } from "../../models/Attendance"
+import { NewAttendance } from "../../types"
 
 export const attendances: NewAttendance[] = [
     {

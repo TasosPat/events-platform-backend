@@ -1,8 +1,6 @@
 import db from '../db'
 import format from 'pg-format';
-import { NewEvent } from '../../models/Event';
-import { NewUser } from '../../models/User';
-import { NewAttendance } from '../../models/Attendance';
+import { NewEvent, NewUser, NewAttendance } from '../../types';
 
 const seed = async (users: NewUser[], events: NewEvent[], attendances: NewAttendance[]) : Promise<void> => {
     try {

@@ -12,11 +12,11 @@ export async function getEvents(req: Request, res: Response, next: NextFunction)
 
 export async function getEventByID(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const { event_id } = req.params;
-        if (!event_id) {
+        const { id } = req.params;
+        if (!id) {
             throw { msg: 'Event ID is missing', status: 400 };
           }
-        const event = await fetchEventByID(Number(event_id));
+        const event = await fetchEventByID(Number(id));
         res.status(200).json(event);
     } catch (err) {
         next(err);

@@ -12,4 +12,8 @@ app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).send({ msg: "Events Platform Backend is running 🚀" });
 });
 
+app.use("/api/users", userRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/attendances", attendanceRoutes);
+
 export default app;

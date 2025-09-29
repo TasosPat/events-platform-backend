@@ -3,7 +3,8 @@ import { fetchEvents, fetchEventByID } from "../models/eventModels";
 
 export async function getEvents(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        
+        const events = await fetchEvents();
+        res.status(200).json(events);
     } catch (err) {
         next(err);
     } 
@@ -11,7 +12,9 @@ export async function getEvents(req: Request, res: Response, next: NextFunction)
 
 export async function getEventByID(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        
+        const { event_id } = req.params;
+        const event = await fetchEventByID(Number(event_id));
+        res.status(200).json(event);
     } catch (err) {
         next(err);
     } 

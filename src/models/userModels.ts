@@ -1,5 +1,5 @@
 import db from '../db/db'
-import { User, NewUser } from "../types";
+import { User } from "../types";
 
 export async function fetchUsers(): Promise<User[]> {
     const query = `SELECT * FROM users ORDER BY user_id ASC`;

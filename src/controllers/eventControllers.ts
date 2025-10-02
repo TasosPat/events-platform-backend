@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { fetchEvents, fetchEventByID } from "../models/eventModels";
+import { fetchEvents, fetchEventByID, addEvent } from "../models/eventModels";
+import { NewEvent } from "../types"
 
 export async function getEvents(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -22,4 +23,21 @@ export async function getEventByID(req: Request, res: Response, next: NextFuncti
         next(err);
     } 
 }
+
+export async function createEvent(req: Request<{}, {}, NewEvent>, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const { title, description, date, location, price } = req.body;
+
+        if (!title || !description || !location) {
+            res.status(400).json({ msg: "Missing required fields" });
+            return;
+          }
+        const event = await addEvent(req.body);
+
+        res.status(201).json(event);
+    } catch (err) {
+        next(err);
+    } 
+}
+
 

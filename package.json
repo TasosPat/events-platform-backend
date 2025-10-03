@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/listen.ts",
     "setup-dbs": "psql -f ./src/db/setup.sql",
     "seed": "ts-node ./src/db/seeds/run-seed.ts"
   },

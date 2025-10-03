@@ -16,14 +16,18 @@ export async function fetchAttendancesByUser(user_id: number): Promise<Event[]> 
 }
 
 export async function addAttendance(user_id: number, event_id: number): Promise<Attendance> {
-    const query = `INSERT INTO attendances (title, description)
+    const query = `INSERT INTO attendances (event_id, user_id)
     VALUES
     ($1, $2)
+    ON CONFLICT (user_id, event_id) DO NOTHING
       RETURNING *;`;
     const args = [event_id, user_id];
     const { rows } = await db.query<Attendance>(query, args);
     if (!rows[0]) {
-      throw new Error("Failed to insert Attendance");
+      throw {
+        status: 400,
+        msg: "User already attending this event",
+      }
     }
     return rows[0];
   }

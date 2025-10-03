@@ -3,6 +3,7 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import attendanceRoutes from "./routes/attendanceRoutes";
+import calendarRoutes from "./routes/calendarRoutes";
 
 const app: Application = express();
 app.use(cors());
@@ -15,5 +16,6 @@ app.get("/api/health", (req: Request, res: Response) => {
 app.use("/api/users", userRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/attendances", attendanceRoutes);
+app.use("/api/calendar", calendarRoutes);
 
 export default app;

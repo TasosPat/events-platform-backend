@@ -28,3 +28,13 @@ export interface NewAttendance {
   export interface Attendance extends NewAttendance {
     id: number;
   }
+
+  import { Request } from "express";
+
+export interface AuthenticatedRequest extends Request {
+  user?: {
+    uid: string;
+    email: string;
+    role: "staff" | "user";
+  };
+}

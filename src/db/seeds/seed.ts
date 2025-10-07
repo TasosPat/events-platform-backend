@@ -10,9 +10,10 @@ const seed = async (users: NewUser[], events: NewEvent[], attendances: NewAttend
         await db.query(`
             CREATE TABLE users (
               user_id SERIAL PRIMARY KEY,
+              uid VARCHAR(128) NOT NULL UNIQUE,
               name VARCHAR(256) NOT NULL,
               role VARCHAR(20) NOT NULL CHECK (role IN ('user', 'staff')),
-              description VARCHAR(2048) NOT NULL
+              description VARCHAR(2048)
             );
           `)
         await db.query(`
@@ -34,8 +35,9 @@ const seed = async (users: NewUser[], events: NewEvent[], attendances: NewAttend
       `)
       if (users.length) {
         const usersInsertQuery = format(
-          `INSERT INTO users (name, role, description) VALUES %L RETURNING *;`,
-          users.map(({ name, role, description }) => [
+          `INSERT INTO users (uid, name, role, description) VALUES %L RETURNING *;`,
+          users.map(({ uid, name, role, description }) => [
+            uid,
             name,
             role,
             description

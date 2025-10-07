@@ -1,5 +1,24 @@
 import db from '../db/db'
-import { User } from "../types";
+import { User, NewUser } from "../types";
+
+export async function insertUser(newUser: NewUser): Promise<User> {
+  const { uid, name, role, description } = newUser;
+
+  const query = `
+    INSERT INTO users (uid, name, role, description)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;
+  `;
+  const args = [uid, name, role, description];
+  const { rows } = await db.query<User>(query, args);
+  
+  if (!rows[0]) {
+    throw new Error("Failed to create user in database");
+  }
+
+  return rows[0];
+}
+
 
 export async function fetchUsers(): Promise<User[]> {
     const query = `SELECT * FROM users ORDER BY user_id ASC`;

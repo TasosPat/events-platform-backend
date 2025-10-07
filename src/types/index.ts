@@ -1,4 +1,5 @@
 export interface NewUser {
+    uid: string;
     name: string;
     role: "user" | "staff";
     description?: string;
@@ -37,4 +38,10 @@ export interface AuthenticatedRequest extends Request {
     email: string;
     role: "staff" | "user";
   };
+}
+
+export interface SignUpRequest {
+  name: string;
+  email: string;
+  password: string;
 }

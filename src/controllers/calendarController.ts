@@ -23,11 +23,11 @@ export async function handleGoogleCallback(req: Request, res: Response, next: Ne
       summary: "Test Event",
       description: "This event was added from our app 🚀",
       start: {
-        dateTime: "2025-10-04T09:00:00-07:00",
+        dateTime: "2025-10-10T09:00:00-07:00",
         timeZone: "America/Los_Angeles",
       },
       end: {
-        dateTime: "2025-10-04T10:00:00-07:00",
+        dateTime: "2025-10-10T10:00:00-07:00",
         timeZone: "America/Los_Angeles",
       },
     };

@@ -6,7 +6,7 @@ export interface NewUser {
   }
 
   export interface User extends NewUser {
-    id: number;
+    user_id: number;
   }
 
 export interface NewEvent {
@@ -18,7 +18,7 @@ export interface NewEvent {
   }
 
   export interface Event extends NewEvent {
-    id: number;
+    event_id: number;
   }
 
 export interface NewAttendance {
@@ -37,6 +37,7 @@ export interface AuthenticatedRequest extends Request {
     uid: string;
     email: string;
     role: "staff" | "user";
+    dbUser?: User;
   };
 }
 

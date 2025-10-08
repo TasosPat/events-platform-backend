@@ -9,6 +9,6 @@ const router = Router();
 router.get("/", getEvents);
 router.get("/:id", getEventByID);
 router.post("/", authenticate, checkRole("staff"), createEvent);
-router.post("/:id/attendances", authenticate, checkRole("user"), createAttendance);
+router.post("/:id/attendances", authenticate, createAttendance);
 
 export default router;

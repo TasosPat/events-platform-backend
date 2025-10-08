@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from "../types/index";
 import { fetchAttendancesByEvent, fetchAttendancesByUser } from "../models/attendanceModels";
 import { addAttendance } from "../models/attendanceModels";
 import { NewAttendance } from "../types"
@@ -23,10 +24,14 @@ export async function getAttendancesByUser(req: Request, res: Response, next: Ne
     } 
 }
 
-export async function createAttendance(req: Request<{ id: string}, {}, NewAttendance>, res: Response, next: NextFunction): Promise<void> {
+export async function createAttendance(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
         const { id } = req.params;
-        const { user_id } = req.body;
+        if (!req.user || !req.user.dbUser) {
+            res.status(401).json({ msg: "User not authenticated" });
+            return;
+        }
+        const { user_id } = req.user.dbUser;
 
         if (!user_id) {
             res.status(400).json({ msg: "User ID is required" });

@@ -1,5 +1,6 @@
 import admin from "../config/firebase"
 import { Request, Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from "../types";
 import { fetchUsers, fetchUserByID, insertUser } from "../models/userModels";
 import { User, SignUpRequest } from '../types';
 
@@ -30,6 +31,21 @@ import { User, SignUpRequest } from '../types';
       res.status(201).json(newUser);
     } catch (err) {
         console.error("Firebase createUser error:", err);
+      next(err);
+    }
+  }
+
+  export async function getMe(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    try {
+      if(!req.user || !req.user.dbUser) {
+        return res.status(404).json({msg: "User not found"});
+      }
+      res.status(200).json({
+        user_id: req.user.dbUser.user_id,
+        name: req.user.dbUser.name,
+        role: req.user.dbUser.role,
+      })
+    } catch(err) {
       next(err);
     }
   }

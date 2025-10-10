@@ -16,17 +16,30 @@ export async function fetchAttendancesByUser(user_id: number): Promise<Event[]> 
 }
 
 export async function addAttendance(user_id: number, event_id: number): Promise<Attendance> {
-    const query = `INSERT INTO attendances (event_id, user_id)
+    const query = `INSERT INTO attendances (user_id, event_id)
     VALUES
     ($1, $2)
     ON CONFLICT (user_id, event_id) DO NOTHING
       RETURNING *;`;
-    const args = [event_id, user_id];
+    const args = [user_id, event_id];
     const { rows } = await db.query<Attendance>(query, args);
     if (!rows[0]) {
       throw {
         status: 400,
         msg: "User already attending this event",
+      }
+    }
+    return rows[0];
+  }
+
+  export async function removeAttendance(user_id: number, event_id: number) {
+    const query = `DELETE FROM attendances WHERE user_id = $1 AND event_id = $2 RETURNING *;`;
+    const args = [user_id, event_id];
+    const { rows } = await db.query<Attendance>(query, args);
+    if (!rows[0]) {
+      throw {
+        status: 400,
+        msg: "User not attending this event",
       }
     }
     return rows[0];

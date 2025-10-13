@@ -5,6 +5,7 @@ import eventRoutes from "./routes/eventRoutes";
 import attendanceRoutes from "./routes/attendanceRoutes";
 import calendarRoutes from "./routes/calendarRoutes";
 import authRoutes from "./routes/authRoutes";
+import adminRoutes from "./routes/adminRoutes";
 import { errorHandler } from "./middleware/errorHandling"
 
 const app: Application = express();
@@ -20,6 +21,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/attendances", attendanceRoutes);
 app.use("/api/calendar", calendarRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.use(errorHandler);
 

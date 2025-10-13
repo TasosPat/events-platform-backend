@@ -4,35 +4,53 @@ import { AuthenticatedRequest } from "../types";
 import { fetchUsers, fetchUserByID, insertUser } from "../models/userModels";
 import { User, SignUpRequest } from '../types';
 
+async function handleUserCreation({
+  name,
+  email,
+  password,
+  role = "user",
+}: SignUpRequest) {
+  const firebaseUser = await admin.auth().createUser({
+    email,
+    password,
+    displayName: name,
+  });
+
+  const newUser = await insertUser({
+    uid: firebaseUser.uid,
+    name,
+    role
+  });
+
+  return newUser;
+}
+
   export async function createUser(req: Request<{}, {}, SignUpRequest>, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password, role } = req.body;
   
-      if (!name || !email || !password) {
+      if (!name || !email || !password || !role) {
         res.status(400).json({ msg: 'Missing required fields' });
         return;
       }
-  
-      // 1. Create user in Firebase
-      const firebaseUser = await admin.auth().createUser({
-        email,
-        password,
-        displayName: name
-      });
-      console.log("Firebase user created:", firebaseUser.uid);
-  
-      // 2. Insert user into your database
-      const newUser = await insertUser({
-        uid: firebaseUser.uid,
-        name,
-        role: 'user', // default role
-      });
+
+      const newUser = await handleUserCreation({ name, email, password, role })
   
       res.status(201).json(newUser);
     } catch (err) {
         console.error("Firebase createUser error:", err);
       next(err);
     }
+  }
+
+  export async function createUserProgrammatically(
+    name: string,
+    email: string,
+    password: string,
+    role: "user" | "staff"
+  ) {
+    const result = await handleUserCreation({ name, email, password, role });
+    return result;
   }
 
   export async function getMe(req: AuthenticatedRequest, res: Response, next: NextFunction) {

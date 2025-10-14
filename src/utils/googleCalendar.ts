@@ -20,10 +20,11 @@ export const SCOPES = [
 ];
 
 // Generate an auth URL to send the user to
-export function getAuthUrl() {
+export function getAuthUrl(state: string) {
   return oauth2Client.generateAuthUrl({
     access_type: "offline", // to get refresh token
     scope: SCOPES,
+    state
   });
 }
 

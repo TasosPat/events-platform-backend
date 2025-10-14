@@ -1,9 +1,18 @@
 import { Request, Response, NextFunction } from "express";
+import { AuthenticatedRequest } from "../types/index"
 import { getAuthUrl, getTokens, addEventToCalendar } from "../utils/googleCalendar";
+import { fetchEventByID } from "../models/eventModels"
+import { createState, consumeState } from "../utils/stateStore";
 
 // Step 1: Generate the Google OAuth URL
-export function getGoogleAuthUrl(req: Request, res: Response) {
-  const url = getAuthUrl();
+export function getGoogleAuthUrl(req: AuthenticatedRequest, res: Response) {
+  const eventId = Number(req.query.eventId);
+  if (!req.user) return res.status(401).json({ msg: "Unauthorized" });
+  const { uid } = req.user; // your authenticate middleware adds this
+  if (!eventId) return res.status(400).json({ msg: "Event ID missing" });
+
+  const state = createState(uid, eventId); // store user+event temporarily
+  const url = getAuthUrl(state);
   res.json({ url }); // frontend redirects the user here
 }
 
@@ -11,31 +20,40 @@ export function getGoogleAuthUrl(req: Request, res: Response) {
 export async function handleGoogleCallback(req: Request, res: Response, next: NextFunction) {
   try {
     const code = req.query.code as string;
-    if (!code) {
-      return res.status(400).json({ msg: "Authorization code missing" });
+    const state = req.query.state as string;
+    if (!code || !state) {
+      return res.status(400).json({ msg: "Authorization code or state missing" });
     }
+    const data = consumeState(state);
+    if (!data) {
+      return res.status(400).json({ msg: "Invalid or expired state" });
+    }
+
+    const { uid, eventId } = data;
 
     // Exchange code for tokens
     const tokens = await getTokens(code);
 
-    // Example event data
-    const event = {
-      summary: "Test Event",
-      description: "This event was added from our app 🚀",
+    // decode the state to get uid and eventId
+    const eventData = await fetchEventByID(Number(eventId));
+    if (!eventData) return res.status(404).json({ msg: "Event not found" });
+    const calendarEvent = {
+      summary: eventData.title,
+      description: eventData.description,
       start: {
-        dateTime: "2025-10-10T09:00:00-07:00",
-        timeZone: "America/Los_Angeles",
+        dateTime: new Date(eventData.date).toISOString(), // ensure ISO string
+        timeZone: "UTC"
       },
       end: {
-        dateTime: "2025-10-10T10:00:00-07:00",
-        timeZone: "America/Los_Angeles",
+        dateTime: new Date(new Date(eventData.date).getTime() + 60*60*1000).toISOString(),
+        timeZone: "UTC"
       },
     };
-
+    
     // Insert into Google Calendar
-    const createdEvent = await addEventToCalendar(event);
+    const createdEvent = await addEventToCalendar(calendarEvent);
 
-    res.status(201).json({ msg: "Event added to calendar", event: createdEvent, tokens });
+    res.redirect(createdEvent.htmlLink!);
   } catch (err) {
     next(err);
   }

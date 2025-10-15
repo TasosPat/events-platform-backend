@@ -37,16 +37,18 @@ export async function handleGoogleCallback(req: Request, res: Response, next: Ne
     // decode the state to get uid and eventId
     const eventData = await fetchEventByID(Number(eventId));
     if (!eventData) return res.status(404).json({ msg: "Event not found" });
+    const startDateTime = `${eventData.date}T${eventData.start_time}`;
+const endDateTime = `${eventData.date}T${eventData.end_time}`;
     const calendarEvent = {
       summary: eventData.title,
       description: eventData.description,
       start: {
-        dateTime: new Date(eventData.date).toISOString(), // ensure ISO string
-        timeZone: "UTC"
+        dateTime: startDateTime,
+        timeZone: "Europe/London"
       },
       end: {
-        dateTime: new Date(new Date(eventData.date).getTime() + 60*60*1000).toISOString(),
-        timeZone: "UTC"
+        dateTime: endDateTime,
+        timeZone: "Europe/London"
       },
     };
     

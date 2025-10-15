@@ -21,9 +21,11 @@ const seed = async (users: NewUser[], events: NewEvent[], attendances: NewAttend
           event_id SERIAL PRIMARY KEY,
           title VARCHAR(512) NOT NULL,
           description VARCHAR(2048) NOT NULL,
-          date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          date DATE DEFAULT CURRENT_DATE,
           location VARCHAR(2048) NOT NULL,
-          price NUMERIC(10,2)
+          price NUMERIC(10,2),
+          start_time TIME,
+          end_time TIME
         );
       `)
       await db.query(`
@@ -48,13 +50,15 @@ const seed = async (users: NewUser[], events: NewEvent[], attendances: NewAttend
     }
       if (events.length) {
         const eventsInsertQuery = format(
-          `INSERT INTO events (title, description, date, location, price) VALUES %L RETURNING *;`,
-          events.map(({ title, description, date, location, price }) => [
+          `INSERT INTO events (title, description, date, location, price, start_time, end_time) VALUES %L RETURNING *;`,
+          events.map(({ title, description, date, location, price, start_time, end_time }) => [
             title,
             description,
             date,
             location,
-            price
+            price,
+            start_time,
+            end_time
           ])
         );
       await db.query(eventsInsertQuery)

@@ -26,7 +26,7 @@ export async function getEventByID(req: Request, res: Response, next: NextFuncti
 
 export async function createEvent(req: Request<{}, {}, NewEvent>, res: Response, next: NextFunction): Promise<void> {
     try {
-        const { title, description, date, location, price } = req.body;
+        const { title, description, date, location, price, start_time, end_time } = req.body;
 
         if (!title || !description || !location) {
             res.status(400).json({ msg: "Missing required fields" });

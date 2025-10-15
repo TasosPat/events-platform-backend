@@ -24,12 +24,12 @@ export async function fetchEventByID(event_id: number): Promise<Event | null> {
 }
 
 export async function addEvent(newEvent: NewEvent): Promise<Event> {
-  const { title, description, date, location, price } = newEvent;
-  const query = `INSERT INTO events (title, description, date, location, price)
+  const { title, description, date, location, price, start_time, end_time } = newEvent;
+  const query = `INSERT INTO events (title, description, date, location, price, start_time, end_time)
   VALUES
-  ($1, $2, $3, $4, $5)
+  ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *;`;
-  const args = [title, description, date, location, price];
+  const args = [title, description, date, location, price, start_time, end_time];
   const { rows } = await db.query<Event>(query, args);
   if (!rows[0]) {
     throw new Error("Failed to insert event");

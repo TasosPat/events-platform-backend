@@ -1,8 +1,8 @@
 import admin from "../config/firebase"
 import { Request, Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from "../types";
-import { fetchUsers, fetchUserByID, insertUser } from "../models/userModels";
-import { User, SignUpRequest } from '../types';
+import { fetchUsers, fetchUserByID, insertUser, editUser } from "../models/userModels";
+import { SignUpRequest } from '../types';
 
 async function handleUserCreation({
   name,
@@ -63,7 +63,8 @@ async function handleUserCreation({
         user_id: req.user.dbUser.user_id,
         name: req.user.dbUser.name,
         role: req.user.dbUser.role,
-        email: req.user.dbUser.email
+        email: req.user.dbUser.email,
+        description: req.user.dbUser.description
       })
     } catch(err) {
       next(err);
@@ -91,4 +92,39 @@ export async function getUserByID(req: Request, res: Response, next: NextFunctio
     } catch (err) {
         next(err);
     } 
+}
+
+export async function updateUserProfile(req: AuthenticatedRequest, res: Response) {
+  if (!req.user || !req.user.dbUser) {
+    return res.status(401).json({ msg: "Unauthorized" });
+  }
+  const { uid } = req.user; // Firebase user ID
+  const { displayName, email, description } = req.body;
+
+  try {
+    // Step 1️⃣: Update Firebase if sensitive fields are changing
+    const updates: any = {};
+    if (email) updates.email = email;
+    if (displayName) updates.displayName = displayName;
+
+    if (Object.keys(updates).length > 0) {
+      await admin.auth().updateUser(uid, updates);
+    }
+
+    // Step 2️⃣: Update local DB (only fields that exist)
+    const user = await editUser(uid, displayName, email, description);
+
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Step 3️⃣: Return updated user info
+    res.json({
+      msg: "Profile updated successfully",
+      user
+    });
+  } catch (err: any) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({ msg: "Error updating profile", error: err.message });
+  }
 }

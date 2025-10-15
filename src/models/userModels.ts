@@ -41,3 +41,17 @@ export async function fetchUserByID(user_id: number): Promise<User | null> {
       }
     return rows[0];
 }
+
+export async function editUser(uid: string, displayName?: string, email?: string, description?: string) {
+  const result = await db.query(
+    `UPDATE users 
+     SET name = COALESCE($1, name),
+         email = COALESCE($2, email),
+         description = COALESCE($3, description)
+     WHERE uid = $4
+     RETURNING *;`,
+    [displayName || null, email || null, description || null, uid]
+  );
+  
+  return result.rows[0];
+}

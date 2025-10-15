@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { fetchEvents, fetchEventByID, addEvent } from "../models/eventModels";
+import { fetchEvents, fetchEventByID, addEvent, removeEvent, modifyEvent } from "../models/eventModels";
 import { NewEvent } from "../types"
 
 export async function getEvents(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -37,6 +37,45 @@ export async function createEvent(req: Request<{}, {}, NewEvent>, res: Response,
         res.status(201).json(event);
     } catch (err) {
         next(err);
+    } 
+}
+
+export async function deleteEvent(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { id } = req.params;
+        if (!id) {
+            throw { msg: 'Event ID is missing', status: 400 };
+          }
+        const result = await removeEvent(Number(id));
+        if (!result) return res.status(404).json({ msg: "Event not found" });
+
+    res.json({ msg: "Event deleted successfully" });
+    } catch (err) {
+        next(err);
+    } 
+}
+
+export async function editEvent(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    if (!id) {
+        throw { msg: 'Event ID is missing', status: 400 };
+      }
+     const { title, description, date, location, price, start_time, end_time } = req.body;
+    try {
+       const event = await modifyEvent({ title, description, date, location, price, start_time, end_time }, Number(id))
+
+       if (!event) {
+        return res.status(404).json({ msg: "Event not found" });
+      }
+
+       res.json({
+        msg: "Event updated successfully",
+        event
+      });
+    } catch (err: any) {
+        console.error("Error updating event:", err);
+    res.status(500).json({ msg: "Error updating event", error: err.message });
+        // next(err);
     } 
 }
 

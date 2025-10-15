@@ -2,6 +2,7 @@ export interface NewUser {
     uid: string;
     name: string;
     role: "user" | "staff";
+    email: string;
     description?: string;
   }
 

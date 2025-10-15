@@ -2,14 +2,14 @@ import db from '../db/db'
 import { User, NewUser } from "../types";
 
 export async function insertUser(newUser: NewUser): Promise<User> {
-  const { uid, name, role, description } = newUser;
+  const { uid, name, role, description, email } = newUser;
 
   const query = `
-    INSERT INTO users (uid, name, role, description)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO users (uid, name, role, description, email)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
   `;
-  const args = [uid, name, role, description];
+  const args = [uid, name, role, description, email];
   const { rows } = await db.query<User>(query, args);
   
   if (!rows[0]) {

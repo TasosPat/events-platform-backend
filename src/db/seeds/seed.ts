@@ -13,7 +13,8 @@ const seed = async (users: NewUser[], events: NewEvent[], attendances: NewAttend
               uid VARCHAR(128) NOT NULL UNIQUE,
               name VARCHAR(256) NOT NULL,
               role VARCHAR(20) NOT NULL CHECK (role IN ('user', 'staff')),
-              description VARCHAR(2048)
+              description VARCHAR(2048),
+              email VARCHAR(255) NOT NULL
             );
           `)
         await db.query(`
@@ -37,12 +38,13 @@ const seed = async (users: NewUser[], events: NewEvent[], attendances: NewAttend
       `)
       if (users.length) {
         const usersInsertQuery = format(
-          `INSERT INTO users (uid, name, role, description) VALUES %L RETURNING *;`,
-          users.map(({ uid, name, role, description }) => [
+          `INSERT INTO users (uid, name, role, description, email) VALUES %L RETURNING *;`,
+          users.map(({ uid, name, role, description, email }) => [
             uid,
             name,
             role,
-            description
+            description,
+            email
           ])
         );
       await db.query(usersInsertQuery)

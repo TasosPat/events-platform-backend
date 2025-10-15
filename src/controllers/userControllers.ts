@@ -19,7 +19,8 @@ async function handleUserCreation({
   const newUser = await insertUser({
     uid: firebaseUser.uid,
     name,
-    role
+    role,
+    email
   });
 
   return newUser;
@@ -62,6 +63,7 @@ async function handleUserCreation({
         user_id: req.user.dbUser.user_id,
         name: req.user.dbUser.name,
         role: req.user.dbUser.role,
+        email: req.user.dbUser.email
       })
     } catch(err) {
       next(err);

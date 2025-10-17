@@ -1,19 +1,20 @@
 import admin from "../../config/firebase";
-
-const testUsers = [
-  { email: "alice@test.com", password: "password123", displayName: "Alice", role: "user" },
-  { email: "bob@test.com", password: "password123", displayName: "Bob", role: "staff" },
-];
+import firebaseUsers from "../data/firebaseUsers"
 
 export default async function seedFirebaseUsers() {
-  for (const user of testUsers) {
+  for (const user of firebaseUsers) {
     try {
-      const createdUser = await admin.auth().createUser({
+      const existing = await admin.auth().getUserByEmail(user.email).catch(() => null);
+      if (existing) {
+      console.log(`ℹ️ User ${user.email} already exists, skipping creation.`);
+      continue;
+      }
+
+       await admin.auth().createUser({
         email: user.email,
         password: user.password,
         displayName: user.displayName,
       });
-      await admin.auth().setCustomUserClaims(createdUser.uid, { role: user.role });
       console.log(`✅ Created Firebase user: ${user.email}`);
     } catch (err: any) {
       console.error(`❌ Error creating user ${user.email}:`, err.message);

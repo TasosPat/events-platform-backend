@@ -1,8 +1,17 @@
 import db from '../db/db'
 import { Event, NewEvent } from "../types";
 
+const eventStr = `event_id,
+  title,
+  description,
+  to_char(date, 'YYYY-MM-DD') AS date,
+  location,
+  price,
+  start_time,
+  end_time`
+
 export async function fetchEvents(): Promise<Event[]> {
-    const query = `SELECT * FROM events ORDER BY event_id ASC`;
+    const query = `SELECT ${eventStr} FROM events ORDER BY event_id ASC`;
     const { rows } = await db.query(query);
     return rows;
 }
@@ -11,7 +20,7 @@ export async function fetchEventByID(event_id: number): Promise<Event | null> {
     if(!event_id) {
         return null;
     }
-    const query = `SELECT * FROM events WHERE event_id=$1`;
+    const query = `SELECT ${eventStr} FROM events WHERE event_id=$1`;
     const args = [event_id];
     const { rows } = await db.query<Event>(query, args);
     if (!rows[0]) {

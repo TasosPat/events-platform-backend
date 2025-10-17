@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from "../types/index"
 import { getAuthUrl, getTokens, addEventToCalendar } from "../utils/googleCalendar";
 import { fetchEventByID } from "../models/eventModels"
 import { createState, consumeState } from "../utils/stateStore";
+import { AppError } from "../errors/AppError";
 
 // Step 1: Generate the Google OAuth URL
 export function getGoogleAuthUrl(req: AuthenticatedRequest, res: Response) {
@@ -26,7 +27,7 @@ export async function handleGoogleCallback(req: Request, res: Response, next: Ne
     }
     const data = consumeState(state);
     if (!data) {
-      return res.status(400).json({ msg: "Invalid or expired state" });
+      throw new AppError("Invalid or expired state", 400)
     }
 
     const { uid, eventId } = data;
@@ -36,7 +37,7 @@ export async function handleGoogleCallback(req: Request, res: Response, next: Ne
 
     // decode the state to get uid and eventId
     const eventData = await fetchEventByID(Number(eventId));
-    if (!eventData) return res.status(404).json({ msg: "Event not found" });
+    if (!eventData) throw new AppError("Event not found", 404);
     const startDateTime = `${eventData.date}T${eventData.start_time}`;
 const endDateTime = `${eventData.date}T${eventData.end_time}`;
     const calendarEvent = {

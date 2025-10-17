@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from "../types";
 import { fetchUsers, fetchUserByID, insertUser, editUser } from "../models/userModels";
 import { SignUpRequest } from '../types';
+import { AppError } from "../errors/AppError";
 
 async function handleUserCreation({
   name,
@@ -31,15 +32,13 @@ async function handleUserCreation({
       const { name, email, password, role } = req.body;
   
       if (!name || !email || !password || !role) {
-        res.status(400).json({ msg: 'Missing required fields' });
-        return;
+        throw new AppError("Missing required fields", 400)
       }
 
       const newUser = await handleUserCreation({ name, email, password, role })
   
       res.status(201).json(newUser);
     } catch (err) {
-        console.error("Firebase createUser error:", err);
       next(err);
     }
   }
@@ -57,7 +56,7 @@ async function handleUserCreation({
   export async function getMe(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       if(!req.user || !req.user.dbUser) {
-        return res.status(404).json({msg: "User not found"});
+        throw new AppError("User not found", 404)
       }
       res.status(200).json({
         user_id: req.user.dbUser.user_id,
@@ -85,7 +84,7 @@ export async function getUserByID(req: Request, res: Response, next: NextFunctio
     try {
         const { id } = req.params;
         if (!id) {
-            throw { msg: 'User ID is missing', status: 400 };
+          throw new AppError("User ID is missing", 400)
           }
         const user = await fetchUserByID(Number(id));
         res.status(200).json(user);
@@ -94,9 +93,9 @@ export async function getUserByID(req: Request, res: Response, next: NextFunctio
     } 
 }
 
-export async function updateUserProfile(req: AuthenticatedRequest, res: Response) {
+export async function updateUserProfile(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   if (!req.user || !req.user.dbUser) {
-    return res.status(401).json({ msg: "Unauthorized" });
+    throw new AppError("Unauthorised!", 401)
   }
   const { uid } = req.user; // Firebase user ID
   const { displayName, email, description } = req.body;
@@ -115,7 +114,7 @@ export async function updateUserProfile(req: AuthenticatedRequest, res: Response
     const user = await editUser(uid, displayName, email, description);
 
     if (!user) {
-      return res.status(404).json({ msg: "User not found" });
+      throw new AppError("User not found", 404)
     }
 
     // Step 3️⃣: Return updated user info
@@ -123,8 +122,7 @@ export async function updateUserProfile(req: AuthenticatedRequest, res: Response
       msg: "Profile updated successfully",
       user
     });
-  } catch (err: any) {
-    console.error("Error updating profile:", err);
-    res.status(500).json({ msg: "Error updating profile", error: err.message });
+  } catch (err) {
+    next(err);
   }
 }

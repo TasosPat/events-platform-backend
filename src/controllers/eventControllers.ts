@@ -1,11 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import { fetchEvents, fetchEventByID, addEvent, removeEvent, modifyEvent } from "../models/eventModels";
 import { NewEvent } from "../types"
+import { AppError } from "../errors/AppError";
 
 export async function getEvents(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+        const now = new Date();
         const events = await fetchEvents();
-        res.status(200).json(events);
+        const upcoming = events.filter((event) => {
+            const eventDate = new Date(event.date);
+            const datePart = eventDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
+            const endTime = new Date(`${datePart}T${event.end_time}`)
+            return endTime >= now;
+        })
+        const past = events.filter(event => !upcoming.includes(event));
+       
+        res.status(200).json({ upcoming, past });
     } catch (err) {
         next(err);
     } 
@@ -15,7 +25,7 @@ export async function getEventByID(req: Request, res: Response, next: NextFuncti
     try {
         const { id } = req.params;
         if (!id) {
-            throw { msg: 'Event ID is missing', status: 400 };
+            throw new AppError("Event ID is missing", 400)
           }
         const event = await fetchEventByID(Number(id));
         res.status(200).json(event);
@@ -29,8 +39,7 @@ export async function createEvent(req: Request<{}, {}, NewEvent>, res: Response,
         const { title, description, date, location, price, start_time, end_time } = req.body;
 
         if (!title || !description || !location) {
-            res.status(400).json({ msg: "Missing required fields" });
-            return;
+            throw new AppError("Missing required fields", 400)
           }
         const event = await addEvent(req.body);
 
@@ -47,7 +56,7 @@ export async function deleteEvent(req: Request, res: Response, next: NextFunctio
             throw { msg: 'Event ID is missing', status: 400 };
           }
         const result = await removeEvent(Number(id));
-        if (!result) return res.status(404).json({ msg: "Event not found" });
+        if (!result) throw new AppError("Event not found!", 404)
 
     res.json({ msg: "Event deleted successfully" });
     } catch (err) {
@@ -65,7 +74,7 @@ export async function editEvent(req: Request, res: Response, next: NextFunction)
        const event = await modifyEvent({ title, description, date, location, price, start_time, end_time }, Number(id))
 
        if (!event) {
-        return res.status(404).json({ msg: "Event not found" });
+        throw new AppError("Event not found!", 404)
       }
 
        res.json({
@@ -73,9 +82,7 @@ export async function editEvent(req: Request, res: Response, next: NextFunction)
         event
       });
     } catch (err: any) {
-        console.error("Error updating event:", err);
-    res.status(500).json({ msg: "Error updating event", error: err.message });
-        // next(err);
+        next(err);
     } 
 }
 

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import axios from "axios";
+import { AppError } from "../errors/AppError";
 
 export async function loginUser(req: Request, res: Response, next: NextFunction) {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      res.status(400).json({ msg: "Email and password are required" });
-      return;
+      throw new AppError("Email and password are required", 400);
     }
 
     const apiKey = process.env.FIREBASE_API_KEY;
@@ -23,7 +23,7 @@ export async function loginUser(req: Request, res: Response, next: NextFunction)
     res.status(200).json({ idToken, refreshToken, expiresIn });
   } catch (err: any) {
     if (err.response?.data?.error?.message) {
-      res.status(400).json({ msg: err.response.data.error.message });
+      return next(new AppError(err.response.data.error.message, 400));
     } else {
       next(err);
     }

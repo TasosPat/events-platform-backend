@@ -1,0 +1,1 @@
+{"version":3,"file":"attendanceRoutes.js","sourceRoot":"","sources":["../../src/routes/attendanceRoutes.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,gFAAmG;AACnG,6CAAiD;AAEjD,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,GAAG,CAAC,aAAa,EAAE,mBAAY,EAAE,6CAAqB,CAAC,CAAC;AAC/D,MAAM,CAAC,GAAG,CAAC,YAAY,EAAE,mBAAY,EAAE,4CAAoB,CAAC,CAAC;AAE7D,kBAAe,MAAM,CAAC"}

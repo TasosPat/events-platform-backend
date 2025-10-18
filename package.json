@@ -7,7 +7,9 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node src/listen.ts",
     "setup-dbs": "psql -f ./src/db/setup.sql",
     "seed": "ts-node ./src/db/seeds/run-seed.ts",
-    "reseed": "ts-node src/db/seeds/reseedAll.ts"
+    "reseed": "ts-node src/db/seeds/reseedAll.ts",
+    "start": "node dist/listen.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

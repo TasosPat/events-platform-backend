@@ -1,0 +1,1 @@
+{"version":3,"file":"checkRole.d.ts","sourceRoot":"","sources":["../../src/middleware/checkRole.ts"],"names":[],"mappings":"AAAA,OAAO,EAAW,QAAQ,EAAE,YAAY,EAAE,MAAM,SAAS,CAAC;AAC1D,OAAO,EAAE,oBAAoB,EAAE,MAAM,gBAAgB,CAAA;AAErD,wBAAgB,SAAS,CAAC,YAAY,EAAE,OAAO,GAAG,MAAM,IAC9C,KAAK,oBAAoB,EAAE,KAAK,QAAQ,EAAE,MAAM,YAAY,oDASrE"}

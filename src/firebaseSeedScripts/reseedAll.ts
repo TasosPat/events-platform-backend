@@ -1,8 +1,8 @@
 import seedFirebaseUsers from './seedFirebaseUsers';
 import fetchFirebaseUsers from './fetchFirebaseUsers';
 import clearFirebaseUsers from './clearFirebaseUsers';
-import seed from './seed';
-import { events, attendances } from '../data';
+import seed from '../db/seeds/seed';
+import { events, attendances } from '../db/data';
 
 async function reseedAll() {
   try {

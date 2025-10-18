@@ -1,6 +1,6 @@
-import admin from "../../config/firebase";
-import { NewUser } from "../../types";
-import { dbUsers } from '../data';
+import admin from "../config/firebase";
+import { NewUser } from "../types";
+import { dbUsers } from '../db/data';
 
 export default async function fetchFirebaseUsers(): Promise<NewUser[]> {
     const allUsers: NewUser[] = [];

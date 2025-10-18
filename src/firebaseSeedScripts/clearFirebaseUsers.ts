@@ -1,4 +1,4 @@
-import admin from "../../config/firebase";
+import admin from "../config/firebase";
 
 export default async function clearFirebaseUsers() {
   let nextPageToken: string | undefined = undefined;

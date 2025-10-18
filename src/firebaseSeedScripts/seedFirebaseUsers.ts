@@ -1,5 +1,5 @@
-import admin from "../../config/firebase";
-import firebaseUsers from "../data/firebaseUsers"
+import admin from "../config/firebase";
+import firebaseUsers from "../db/data/firebaseUsers"
 
 export default async function seedFirebaseUsers() {
   for (const user of firebaseUsers) {

@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.attendances = exports.events = exports.testUsers = exports.dbUsers = exports.firebaseUsers = void 0;
-const firebaseUsers_1 = __importDefault(require("./firebaseUsers"));
-exports.firebaseUsers = firebaseUsers_1.default;
+exports.attendances = exports.events = exports.testUsers = exports.dbUsers = void 0;
 const dbUsers_1 = require("./dbUsers");
 Object.defineProperty(exports, "dbUsers", { enumerable: true, get: function () { return dbUsers_1.dbUsers; } });
 const events_1 = require("./events");

@@ -9,7 +9,8 @@
     "seed": "ts-node ./src/db/seeds/run-seed.ts",
     "reseed": "ts-node src/db/seeds/reseedAll.ts",
     "start": "node dist/listen.js",
-    "build": "tsc"
+    "build": "tsc",
+    "setup-and-start": "ts-node ./src/db/seeds/run-seed.ts && node ./dist/listen.js"
   },
   "keywords": [],
   "author": "",

@@ -1,36 +1,32 @@
-import {firebaseUsers} from './';
+import { NewUser } from "../../types/index"
 
-export const dbUsers = firebaseUsers.map(user => {
-    let role: 'user' | 'staff';
-    let description: string;
-
-    switch (user.displayName) {
-        case 'Alice Johnson':
-          role = 'staff';
-          description = 'Community organizer and event host.';
-          break;
-        case 'Bob Smith':
-          role = 'user';
-          description = 'Enjoys attending workshops and learning new skills.';
-          break;
-        case 'Carol Lee':
-          role = 'user';
-          description = 'Loves volunteering and community activities.';
-          break;
-        case 'David Brown':
-          role = 'staff';
-          description = 'Experienced in running local music events.';
-          break;
-        default:
-          role = 'user';
-          description = '';
-      }
-
-    return {
-    uid: '', // will be populated after creating/fetching Firebase users
-    name: user.displayName,
-    email: user.email,
-    role,
-    description
-    }
-  });
+export const dbUsers: NewUser[] = [
+  {
+    uid:"3m4cYC05UOapyTCwZJmj7m545p82",
+    name:"Alice Johnson",
+    role:"staff",
+    description:"Community organizer and event host.",
+    email:"alice@test.com"
+  },
+  {
+    uid:"qc96RR8eDMWpwmppJXc1VTuOafc2",
+    name:"Bob Smith",
+    role:"user",
+    description:"Enjoys attending workshops and learning new skills.",
+    email:"bob@test.com"
+  },
+  {
+    uid:"RrideTYfW9TbsdyF30yp2xgovnu1",
+    name:"Carol Lee",
+    role:"user",
+    description:"Loves volunteering and community activities.",
+    email:"carol@test.com"
+  },
+  {
+    uid:"xNOHqRDC1EbRx8Ex5ybzaVRsVYR2",
+    name:"David Brown",
+    role:"staff",
+    description:"Experienced in running local music events.",
+    email:"david@test.com"
+  }
+]

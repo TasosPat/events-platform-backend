@@ -1,8 +1,3 @@
-export declare const dbUsers: {
-    uid: string;
-    name: string;
-    email: string;
-    role: "user" | "staff";
-    description: string;
-}[];
+import { NewUser } from "../../types/index";
+export declare const dbUsers: NewUser[];
 //# sourceMappingURL=dbUsers.d.ts.map

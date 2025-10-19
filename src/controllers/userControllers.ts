@@ -31,7 +31,7 @@ async function handleUserCreation({
     try {
       const { name, email, password, role } = req.body;
   
-      if (!name || !email || !password || !role) {
+      if (!name || !email || !password ) {
         throw new AppError("Missing required fields", 400)
       }
 
